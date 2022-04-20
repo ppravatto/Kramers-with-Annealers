@@ -28,3 +28,5 @@ python3 engine.py <hamiltonian> <rvalue> <samples>
 where `<hamiltonian>` is the text file containing the "hamiltonian" matrix, `<rvalue>` represents the value of `r` to be used in the XBK method, while `<samples>` represents the number of independent simulations to accumulate. The program will output a `stat_r<rvalue>.txt` containing the eigenvalues computed by the independent annealing runs.
 
 An updated list of commands accepted by the `engine.py` can be printed using the `-h` or `--help` flags.
+
+The output files from one or more annealing runs can be analyzed using the `analyze.py` and `multianalyze.py` scripts contained in the `tools` directory. A description of the usage of the analysis scripts can be examined using the `-h` or `--help` flags.

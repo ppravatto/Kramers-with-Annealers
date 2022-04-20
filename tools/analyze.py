@@ -40,6 +40,8 @@ if __name__ == "__main__":
     plt.xlabel("Number of runs", size=24)
     plt.ylabel("Eigenvalue estimate", size=24)
 
+    print("Minimum value: {:e}".format(min(data)))
+
     if len(sys.argv) > 2:
 
         if os.path.isfile(sys.argv[2]) == False:
@@ -52,9 +54,12 @@ if __name__ == "__main__":
         
         plt.hlines(reference, 0, max(bins), colors='black', linestyles='--')
 
+        print("Reference: {:e}".format(reference))
+        print("Error: {:f}%".format(100*(min(data)-reference)/reference))
+    
+
+
     plt.tight_layout()
+    plt.savefig(filename.split(".")[0]+".png", dpi=600)
     plt.show()
-
-
-
     
