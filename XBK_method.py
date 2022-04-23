@@ -6,6 +6,9 @@ from openfermion.utils import count_qubits
 from helper_functions import *
 
 
+#Define a default value for the sampler parameters
+SP_DEFAULT = {'num_reads': 10000}
+
 
 #Applies XBK transformation to an OpenFermion QubitOperator
 def XBK_transform(op, r, p):
@@ -92,7 +95,7 @@ def construct_C(n, r, p):
 
 
 #Find minimum energy and ground state using XBK method
-def XBK(qubit_Hs, qubit_Cs, r, sampler, starting_lam=0, num_samples=1000, strength=1e3, verbose=False):
+def XBK(qubit_Hs, qubit_Cs, r, sampler, sampler_params=SP_DEFAULT, starting_lam=0, strength=1e3, verbose=False):
     
     n = count_qubits(qubit_Hs[0])
     min_energies, ground_states = [],[]
@@ -122,7 +125,7 @@ def XBK(qubit_Hs, qubit_Cs, r, sampler, starting_lam=0, num_samples=1000, streng
                 break
             
             #run sampler
-            response = sampler.sample_qubo(qubo,num_reads=num_samples)
+            response = sampler.sample_qubo(qubo, **sampler_params)
             solutions = pd.DataFrame(response.data())
 
             #get mininum energy solution

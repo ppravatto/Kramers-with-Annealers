@@ -10,7 +10,7 @@ from XBK_method import *
 
 
 
-def annealing_run(qubit_Hamiltonian, sampler, r):
+def annealing_run(qubit_Hamiltonian, sampler, r, sampler_params=SP_DEFAULT):
     
     m = count_qubits(qubit_Hamiltonian)
     qubit_Hs, qubit_Cs = [],[]
@@ -18,7 +18,7 @@ def annealing_run(qubit_Hamiltonian, sampler, r):
         qubit_Hs += [XBK_transform(qubit_Hamiltonian, r, p)]
         qubit_Cs += [construct_C(m, r, p)]
 
-    XBK_energy, ground_state = XBK(qubit_Hs, qubit_Cs, r, sampler, starting_lam=2, num_samples=1000, strength=1e3, verbose=False)
+    XBK_energy, ground_state = XBK(qubit_Hs, qubit_Cs, r, sampler, sampler_params=sampler_params, starting_lam=2, strength=1e3, verbose=False)
 
     return XBK_energy
         
