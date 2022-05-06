@@ -97,41 +97,4 @@ def compute_energy(Hamiltonian, coefficients, normalize=True):
     
     return energy
     
-
-#Prototype of an engine script [DEBUG ONLY]
-if __name__ == "__main__":
-
-    K = 5
-
-    import matplotlib.pyplot as plt
-    from neal import SimulatedAnnealingSampler
-    sampler = SimulatedAnnealingSampler()
-
-    data = [[], []]
-    for LAM in np.linspace(0, 3, 10):
-
-        H = load_hamiltonian_matrix("VQE.txt")
-        
-        annealing_energy, annealing_solution = QAE(H, K, LAM, sampler)
-
-        wfn_coeff = get_coefficients(annealing_solution, K)
-        energy = compute_energy(H, wfn_coeff)
-
-        data[0].append(LAM)
-        data[1].append(energy)
-        print("Lambda: {:.3f}, functional: {:.5f}, sq_norm: {:.3e}, energy: {:.10f}".format(LAM, annealing_energy, sq_norm(wfn_coeff), energy))
-
-    min_energy = min(data[1])
-    print("-------------------------------------------------------------------------------")
-    print("Minumum energy {:.15f}".format(min_energy))
-
-
-    fig = plt.figure(figsize=(10, 8))
-
-    plt.plot(data[0], data[1])
-    plt.xlabel(r"$\lambda$")
-    plt.ylabel("Energy")
-
-    plt.show()
-
     
