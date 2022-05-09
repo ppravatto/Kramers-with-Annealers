@@ -27,7 +27,7 @@ if __name__ == "__main__":
     scan_data = [[], []]
     for LAM in np.linspace(0, lambda_max, 101):
 
-        H = load_hamiltonian_matrix("hamiltonan.txt")
+        H = load_hamiltonian_matrix("hamiltonian.txt")
         
         
         annealing_energy, annealing_solution = QAE(H, K, LAM, sampler, sampler_params=params)
