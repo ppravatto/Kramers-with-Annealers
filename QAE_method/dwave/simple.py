@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, dimod
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -14,6 +14,17 @@ TOKEN = ""
 DEVICE = ""
 
 
+#Define a custom QAE function to run a QAE iteration with a defined lambda value (lam) returning the full sampling set
+def dwave_QAE(Hamiltonian, K, lam, sampler, sampler_params):
+
+    bqm = get_QAE_bqm(Hamiltonian, K, lam)
+    response = sampler.sample(bqm, **sampler_params)
+    solutions = pd.DataFrame(response.data())
+
+    return solutions['energy'], solutions['sample']
+
+
+
 if __name__ == "__main__":
 
     K = 5
@@ -25,12 +36,24 @@ if __name__ == "__main__":
     params = {'num_reads': shots}
 
     scan_data = [[], []]
-    for LAM in np.linspace(0, lambda_max, 101):
+    for idx, LAM in enumerate(np.linspace(0, lambda_max, 101)):
 
         H = load_hamiltonian_matrix("hamiltonian.txt")
         
         
-        annealing_energy, annealing_solution = QAE(H, K, LAM, sampler, sampler_params=params)
+        QA_energies, QA_solutions = dwave_QAE(H, K, LAM, sampler, sampler_params=params)
+
+        with open("lambda_{}.txt".format(idx), 'w') as file:
+            file.write("#{}\n".format(LAM))
+            for QAS in QA_solutions:
+                WFNC = get_coefficients(QAS, K)
+                energy = compute_energy(H, WFNC)
+                file.write("{:.12f}\n".format(energy))
+
+        index = int(QA_energies.idxmin())
+        annealing_energy = QA_energies[index]
+        annealing_solution = QA_solutions[index]
+
         wfn_coeff = get_coefficients(annealing_solution, K)
         energy = compute_energy(H, wfn_coeff)
 

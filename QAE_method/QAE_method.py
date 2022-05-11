@@ -23,9 +23,9 @@ def load_hamiltonian_matrix(filename):
     return H
 
 
-#Define a function to run a QAE iteration with a defined lambda value (lam)
-def QAE(Hamiltonian, K, lam, sampler, sampler_params=SP_DEFAULT):
-
+#Define a function to generate the bqm expression for a QAE iteration with a defined lambda value (lam)
+def get_QAE_bqm(Hamiltonian, K, lam):
+    
     linear, quadratic = {}, {}
     for r, line in enumerate(Hamiltonian):
         for c, h in enumerate(line):
@@ -44,6 +44,14 @@ def QAE(Hamiltonian, K, lam, sampler, sampler_params=SP_DEFAULT):
                         quadratic[(q_i, q_j)] = 2*F*c_i*c_j   
 
     bqm = dimod.BinaryQuadraticModel(linear, quadratic, dimod.BINARY)
+
+    return bqm
+
+
+#Define a function to run a QAE iteration with a defined lambda value (lam)
+def QAE(Hamiltonian, K, lam, sampler, sampler_params=SP_DEFAULT):
+
+    bqm = get_QAE_bqm(Hamiltonian, K, lam)
     
     response = sampler.sample(bqm, **sampler_params)
     solutions = pd.DataFrame(response.data())

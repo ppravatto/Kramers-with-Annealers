@@ -40,7 +40,7 @@ if __name__ == "__main__":
     sampler = SimulatedAnnealingSampler()
 
     scan_data = [[], []]
-    for LAM in np.linspace(0, lam_max, 101):
+    for idx, LAM in enumerate(np.linspace(0, lam_max, 101)):
 
         H = load_hamiltonian_matrix(filename)
 
@@ -50,6 +50,13 @@ if __name__ == "__main__":
         for block in data:
             QA_energies.append(block[0])
             QA_solutions.append(block[1])
+        
+        with open("lambda_{}.txt".format(idx), 'w') as file:
+            file.write("#{}\n".format(LAM))
+            for QAS in QA_solutions:
+                WFNC = get_coefficients(QAS, K)
+                energy = compute_energy(H, WFNC)
+                file.write("{:.12f}\n".format(energy))
 
         annealing_energy = min(QA_energies)
         annealing_solution = QA_solutions[QA_energies.index(annealing_energy)]
