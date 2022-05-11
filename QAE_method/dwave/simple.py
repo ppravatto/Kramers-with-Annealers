@@ -21,7 +21,7 @@ def dwave_QAE(Hamiltonian, K, lam, sampler, sampler_params):
     response = sampler.sample(bqm, **sampler_params)
     solutions = pd.DataFrame(response.data())
 
-    return solutions['energy'], solutions['sample']
+    return list(solutions['energy']), list(solutions['sample'])
 
 
 
@@ -43,23 +43,19 @@ if __name__ == "__main__":
         
         QA_energies, QA_solutions = dwave_QAE(H, K, LAM, sampler, sampler_params=params)
 
+        FUNCTIONAL, ENERGY, WFNC = None, None, None
         with open("lambda_{}.txt".format(idx), 'w') as file:
             file.write("#{}\n".format(LAM))
-            for QAS in QA_solutions:
-                WFNC = get_coefficients(QAS, K)
-                energy = compute_energy(H, WFNC)
+            for idx, QAS in enumerate(QA_solutions):
+                wfnc = get_coefficients(QAS, K)
+                energy = compute_energy(H, wfnc)
                 file.write("{:.12f}\n".format(energy))
-
-        index = int(QA_energies.idxmin())
-        annealing_energy = QA_energies[index]
-        annealing_solution = QA_solutions[index]
-
-        wfn_coeff = get_coefficients(annealing_solution, K)
-        energy = compute_energy(H, wfn_coeff)
+                if idx==0 or energy < ENERGY:
+                    FUNCTIONAL, ENERGY, WFNC = QA_energies[idx], energy, wfnc
 
         scan_data[0].append(LAM)
-        scan_data[1].append(energy)
-        print(" Lambda: {:.3f}, functional: {:.5f}, sq_norm: {:.3e}, energy: {:.10f}".format(LAM, annealing_energy, sq_norm(wfn_coeff), energy))
+        scan_data[1].append(ENERGY)
+        print(" Lambda: {:.3f}, functional: {:.5f}, sq_norm: {:.3e}, energy: {:.10f}".format(LAM, FUNCTIONAL, sq_norm(WFNC), ENERGY))
 
     min_energy = min(scan_data[1])
     print("--------------------------------------------------------------------------------")
