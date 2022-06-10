@@ -48,7 +48,7 @@ if __name__ == "__main__":
     cbar = plt.colorbar(pcmesh)
     cbar.set_label("Number of samples", rotation=90)
 
-    plt.plot(LAMBDA, MINSTEP, c="black", label="Mimimum")
+    plt.plot(LAMBDA, MINSTEP, c="#bf00bf", label="Mimimum")
 
     plt.xlabel(r"$\lambda$", size=22)
     plt.ylabel("Energy", size=22)
