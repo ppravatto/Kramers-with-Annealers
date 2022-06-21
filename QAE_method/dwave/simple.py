@@ -49,7 +49,7 @@ if __name__ == "__main__":
             for idx, QAS in enumerate(QA_solutions):
                 wfnc = get_coefficients(QAS, K)
                 energy = compute_energy(H, wfnc)
-                file.write("{:.12f}\n".format(energy))
+                file.write("{:.12f}\t{:.12f}\n".format(energy, sq_norm(wfnc)))
                 if idx==0 or energy < ENERGY:
                     FUNCTIONAL, ENERGY, WFNC = QA_energies[idx], energy, wfnc
 

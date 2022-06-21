@@ -56,7 +56,7 @@ if __name__ == "__main__":
             for QAS in QA_solutions:
                 WFNC = get_coefficients(QAS, K)
                 energy = compute_energy(H, WFNC)
-                file.write("{:.12f}\n".format(energy))
+                file.write("{:.12f}\t{:.12f}\n".format(energy, sq_norm(WFNC)))
 
         annealing_energy = min(QA_energies)
         annealing_solution = QA_solutions[QA_energies.index(annealing_energy)]
